@@ -66,12 +66,14 @@ const getReviews = async (movieId: string, search: string, option: ReviewOptionT
         if (option === 'title'){
             reviews = await Review.find({ title: { $regex: pattern }})
                             .where('movie').equals(movieId) //filter로 해도 되구, where도 쓸 수 있다는거!
+                            .populate('writer', 'name').populate('movie') //객체로 치환되어 나올것.   
                             .sort({createdAt: -1}) //최신순 정렬
                             .skip(perPage*(page-1))
                             .limit(perPage);
         } else if(option === 'content'){
             reviews = await Review.find({ director: { $regex: pattern }})
                             .where('movie').equals(movieId) 
+                            .populate('writer', 'name').populate('movie') 
                             .sort({createdAt: -1}) //최신순 정렬
                             .skip(perPage*(page-1))
                             .limit(perPage);;
@@ -82,6 +84,7 @@ const getReviews = async (movieId: string, search: string, option: ReviewOptionT
                     { title: { $regex: pattern } }
                 ] //$or 연산자 사용!!
             }).where('movie').equals(movieId) 
+            .populate('writer', 'name').populate('movie') 
             .sort({createdAt: -1}) //최신순 정렬
             .skip(perPage*(page-1))
             .limit(perPage);;
